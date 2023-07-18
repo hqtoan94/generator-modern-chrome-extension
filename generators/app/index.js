@@ -1,12 +1,39 @@
-/* eslint-disable camelcase */
 'use strict';
 const Generator = require('yeoman-generator');
 const chalk = require('chalk');
 const yosay = require('yosay');
+const { isChecked } = require('./utils');
 
 var chromeManifest = require('./chrome-manifest');
 
 module.exports = class extends Generator {
+  constructor(args, opts) {
+    super(args, opts);
+
+    this.srcScript = 'app/scripts/';
+
+    this.option('typescript');
+  }
+
+  _copyScript(src, dest, metadata) {
+    if (!dest) {
+      dest = src;
+    }
+
+    if (this.options.typescript) {
+      dest = dest.replace('.js', '.ts');
+    }
+
+    this.fs.copyTpl(
+      this.templatePath('scripts/' + src),
+      this.destinationPath(this.srcScript + dest),
+      {
+        ...metadata,
+        typescript: this.options.typescript
+      }
+    );
+  }
+
   prompting() {
     // Have Yeoman greet the user.
     this.log(
@@ -18,6 +45,16 @@ module.exports = class extends Generator {
     );
 
     const prompts = [
+      {
+        name: 'name',
+        message: 'What would you like to call this extension?',
+        default: this.appname ? this.appname : 'MyChromeExtension'
+      },
+      {
+        name: 'description',
+        message: 'How would you like to describe this extension?',
+        default: 'My Chrome Extension'
+      },
       {
         type: 'checkbox',
         name: 'uiFeatures',
@@ -43,6 +80,36 @@ module.exports = class extends Generator {
     this.fs.copy(
       this.templatePath('editorconfig'),
       this.destinationPath('.editorconfig')
+    );
+  }
+
+  contentScript() {
+    if (!isChecked(this.props.uiFeatures, 'contentScripts')) {
+      return;
+    }
+
+    this._copyScript('contentscript.js');
+  }
+
+  assets() {
+    const locale = {
+      name: this.props.name,
+      description: this.props.description
+    };
+    this.fs.copyTpl(
+      this.templatePath('_locales/en/messages.json'),
+      this.destinationPath('app/_locales/en/messages.json'),
+      locale
+    );
+
+    this.fs.copy(
+      this.templatePath('images/icon-16.png'),
+      this.destinationPath('app/images/icon-16.png')
+    );
+
+    this.fs.copy(
+      this.templatePath('images/icon-128.png'),
+      this.destinationPath('app/images/icon-128.png')
     );
   }
 
