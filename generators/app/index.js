@@ -100,13 +100,32 @@ module.exports = class extends Generator {
     );
   }
 
-  copyConfig() {
+  webpackCommon() {
     this._copyConfig('webpack.common.js');
+  }
+
+  webpackDev() {
     this._copyConfig('webpack.dev.js');
+  }
+
+  webpackProd() {
     this._copyConfig('webpack.prod.js');
   }
 
   packageJSON() {
+    const devDependencies = {
+      '@babel/core': '^7.22.9',
+      '@babel/preset-env': '^7.22.9',
+      'babel-loader': '^9.1.3',
+      webpack: '^5.88.2',
+      'webpack-cli': '^5.1.4'
+    };
+
+    if (this.options.typescript) {
+      devDependencies.typescript = '^5.1.6';
+      devDependencies['ts-loader'] = '^9.4.4';
+    }
+
     this.packageJson.merge({
       name: _s.slugify(this.appname),
       version: '1.0.0',
@@ -119,14 +138,19 @@ module.exports = class extends Generator {
       },
       author: '',
       license: 'ISC',
-      devDependencies: {
-        '@babel/core': '^7.22.9',
-        '@babel/preset-env': '^7.22.9',
-        'babel-loader': '^9.1.3',
-        webpack: '^5.88.2',
-        'webpack-cli': '^5.1.4'
-      }
+      devDependencies
     });
+  }
+
+  typeScriptConfig() {
+    if (!this.options.typescript) {
+      return;
+    }
+
+    this.fs.copyTpl(
+      this.templatePath('_tsconfig.json'),
+      this.destinationPath('tsconfig.json')
+    );
   }
 
   assets() {
@@ -165,7 +189,7 @@ module.exports = class extends Generator {
       return;
     }
 
-    this._copyScript('entries/contentScript.js');
+    this._copyScript('entries/contentscript.js');
   }
 
   backgroundScript() {

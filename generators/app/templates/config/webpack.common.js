@@ -2,8 +2,10 @@ const path = require('path');
 
 module.exports = {
   entry: {
-    backgroundServiceWorker: './src/entries/backgroundServiceWorker.js',
-    contentScript: './src/entries/contentScript.js'
+    backgroundServiceWorker:
+      './src/entries/backgroundServiceWorker.<% if (typescript) { %>ts<% } else { %>js<% } %>',
+    contentscript:
+      './src/entries/contentscript.<% if (typescript) { %>ts<% } else { %>js<% } %>'
   },
   output: {
     filename: '[name].js',
@@ -11,7 +13,11 @@ module.exports = {
   },
   module: {
     rules: [
-      {
+      <% if (typescript) { %>{
+        test: /\.ts?$/,
+        use: 'ts-loader',
+        exclude: /node_modules/
+      }<% } else { %>{
         test: /\.(?:js|mjs|cjs)$/,
         exclude: /node_modules/,
         use: {
@@ -20,7 +26,7 @@ module.exports = {
             presets: [['@babel/preset-env', { targets: 'defaults' }]]
           }
         }
-      }
+      }<% } %>
     ]
   }
 };
