@@ -1,4 +1,3 @@
-'use strict';
 const path = require('path');
 const assert = require('yeoman-assert');
 const helpers = require('yeoman-test');
@@ -20,39 +19,121 @@ const generateChomeExtension = (appPrompts, appOptions = {}) => {
 };
 
 describe('generator-modern-chrome-extension:app', () => {
-  it('initiate project', async () => {
-    await generateChomeExtension({
-      uiFeatures: []
+  describe('generate js project', () => {
+    it('initiate project without uiFeatures', async () => {
+      await generateChomeExtension({
+        uiFeatures: []
+      });
+
+      assert.file([
+        '.gitignore',
+        '.editorconfig',
+        'package.json',
+        'config/webpack.common.js',
+        'config/webpack.dev.js',
+        'config/webpack.prod.js',
+        'app/manifest.json',
+        'app/_locales/en/messages.json',
+        'app/images/icon-16.png',
+        'app/images/icon-128.png',
+        'src/entries/backgroundServiceWorker.js'
+      ]);
+
+      assert.fileContent([
+        ['app/manifest.json', '"service_worker"'],
+        ['app/manifest.json', '"scripts/backgroundServiceWorker.js"']
+      ]);
+      assert.noFile(['app/scripts/contentscript.js']);
+      assert.noFileContent('app/manifest.json', '"content_scripts"');
     });
 
-    assert.file([
-      '.gitignore',
-      '.editorconfig',
-      'app/manifest.json',
-      'app/_locales/en/messages.json',
-      'app/images/icon-16.png',
-      'app/images/icon-128.png'
-    ]);
+    it('initiate content script project', async () => {
+      await generateChomeExtension({
+        uiFeatures: ['contentScripts']
+      });
 
-    assert.noFile(['app/scripts/contentscript.js']);
-    assert.noFileContent('app/manifest.json', '"content_scripts"');
+      assert.file([
+        '.gitignore',
+        '.editorconfig',
+        'package.json',
+        'config/webpack.common.js',
+        'config/webpack.dev.js',
+        'config/webpack.prod.js',
+        'app/manifest.json',
+        'app/_locales/en/messages.json',
+        'app/images/icon-16.png',
+        'app/images/icon-128.png',
+        'src/entries/backgroundServiceWorker.js',
+        'src/entries/contentScript.js'
+      ]);
+
+      assert.fileContent([
+        ['app/manifest.json', '"service_worker"'],
+        ['app/manifest.json', '"content_scripts"'],
+        ['app/manifest.json', '"scripts/backgroundServiceWorker.js"']
+      ]);
+    });
   });
 
-  it('initiate content script project', async () => {
-    await generateChomeExtension({
-      uiFeatures: ['contentScripts']
+  describe('generate ts project', () => {
+    it('initiate project', async () => {
+      await generateChomeExtension(
+        {
+          uiFeatures: []
+        },
+        { typescript: true }
+      );
+
+      assert.file([
+        '.gitignore',
+        '.editorconfig',
+        'package.json',
+        'config/webpack.common.js',
+        'config/webpack.dev.js',
+        'config/webpack.prod.js',
+        'app/manifest.json',
+        'app/_locales/en/messages.json',
+        'app/images/icon-16.png',
+        'app/images/icon-128.png',
+        'src/entries/backgroundServiceWorker.ts'
+      ]);
+
+      assert.fileContent([
+        ['app/manifest.json', '"service_worker"'],
+        ['app/manifest.json', '"scripts/backgroundServiceWorker.js"']
+      ]);
+      assert.noFile(['app/scripts/contentscript.ts']);
+      assert.noFileContent('app/manifest.json', '"content_scripts"');
     });
 
-    assert.file([
-      '.gitignore',
-      '.editorconfig',
-      'app/manifest.json',
-      'app/_locales/en/messages.json',
-      'app/images/icon-16.png',
-      'app/images/icon-128.png',
-      'app/scripts/contentscript.js'
-    ]);
+    it('initiate content script project', async () => {
+      await generateChomeExtension(
+        {
+          uiFeatures: ['contentScripts']
+        },
+        { typescript: true }
+      );
 
-    assert.fileContent('app/manifest.json', '"content_scripts"');
+      assert.file([
+        '.gitignore',
+        '.editorconfig',
+        'package.json',
+        'config/webpack.common.js',
+        'config/webpack.dev.js',
+        'config/webpack.prod.js',
+        'app/manifest.json',
+        'app/_locales/en/messages.json',
+        'app/images/icon-16.png',
+        'app/images/icon-128.png',
+        'src/entries/backgroundServiceWorker.ts',
+        'src/entries/contentScript.ts'
+      ]);
+
+      assert.fileContent([
+        ['app/manifest.json', '"service_worker"'],
+        ['app/manifest.json', '"content_scripts"'],
+        ['app/manifest.json', '"scripts/backgroundServiceWorker.js"']
+      ]);
+    });
   });
 });

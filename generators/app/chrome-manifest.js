@@ -58,7 +58,7 @@ module.exports = {
       },
       default_locale: 'en',
       background: {
-        scripts: ['scripts/chromereload.js', 'scripts/background.js']
+        service_worker: 'scripts/backgroundServiceWorker.js'
       }
     });
 

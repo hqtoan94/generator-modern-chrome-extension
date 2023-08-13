@@ -2,17 +2,34 @@
 const Generator = require('yeoman-generator');
 const chalk = require('chalk');
 const yosay = require('yosay');
+const _s = require('underscore.string');
 const { isChecked } = require('./utils');
 
-var chromeManifest = require('./chrome-manifest');
+const chromeManifest = require('./chrome-manifest');
 
 module.exports = class extends Generator {
   constructor(args, opts) {
     super(args, opts);
 
-    this.srcScript = 'app/scripts/';
+    this.srcScript = 'src/';
+    this.srcConfig = 'config/';
 
     this.option('typescript');
+  }
+
+  _copyConfig(src, dest, metadata) {
+    if (!dest) {
+      dest = src;
+    }
+
+    this.fs.copyTpl(
+      this.templatePath('config/' + src),
+      this.destinationPath(this.srcConfig + dest),
+      {
+        ...metadata,
+        typescript: this.options.typescript
+      }
+    );
   }
 
   _copyScript(src, dest, metadata) {
@@ -25,7 +42,7 @@ module.exports = class extends Generator {
     }
 
     this.fs.copyTpl(
-      this.templatePath('scripts/' + src),
+      this.templatePath('src/' + src),
       this.destinationPath(this.srcScript + dest),
       {
         ...metadata,
@@ -83,12 +100,33 @@ module.exports = class extends Generator {
     );
   }
 
-  contentScript() {
-    if (!isChecked(this.props.uiFeatures, 'contentScripts')) {
-      return;
-    }
+  copyConfig() {
+    this._copyConfig('webpack.common.js');
+    this._copyConfig('webpack.dev.js');
+    this._copyConfig('webpack.prod.js');
+  }
 
-    this._copyScript('contentscript.js');
+  packageJSON() {
+    this.packageJson.merge({
+      name: _s.slugify(this.appname),
+      version: '1.0.0',
+      description: this.props.description,
+      private: true,
+      scripts: {
+        test: 'echo "Error: no test specified" && exit 1',
+        build: 'webpack --config config/webpack.prod.js',
+        start: 'webpack --config config/webpack.dev.js'
+      },
+      author: '',
+      license: 'ISC',
+      devDependencies: {
+        '@babel/core': '^7.22.9',
+        '@babel/preset-env': '^7.22.9',
+        'babel-loader': '^9.1.3',
+        webpack: '^5.88.2',
+        'webpack-cli': '^5.1.4'
+      }
+    });
   }
 
   assets() {
@@ -122,9 +160,15 @@ module.exports = class extends Generator {
     this.fs.writeJSON(this.destinationPath('app/manifest.json'), this.manifest);
   }
 
-  install() {
-    this.installDependencies({
-      yarn: true
-    });
+  contentScript() {
+    if (!isChecked(this.props.uiFeatures, 'contentScripts')) {
+      return;
+    }
+
+    this._copyScript('entries/contentScript.js');
+  }
+
+  backgroundScript() {
+    this._copyScript('entries/backgroundServiceWorker.js');
   }
 };

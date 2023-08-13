@@ -23,17 +23,20 @@
     "jest": "^26.1.0",
     "lint-staged": "^9.4.3",
     "prettier": "^1.19.1",
+    "underscore.string": "^3.3.6",
     "yeoman-assert": "^3.1.1",
-    "yeoman-test": "^1.7.0"
+    "yeoman-test": "6.3.0"
   },
   "engines": {
-    "npm": ">= 4.0.0"
+    "npm": ">= 8.0.0",
+    "node": ">= 16.0.0"
   },
   "dependencies": {
-    "chalk": "^2.1.0",
+    "chalk": "4.1.2",
     "chrome-manifest": "^0.2.9",
     "headerize": "^0.1.1",
-    "yeoman-generator": "^3.1.1",
+    "yeoman-environment": "^3.19.3",
+    "yeoman-generator": "5.9.0",
     "yosay": "^2.0.2"
   },
   "jest": {
@@ -72,7 +75,8 @@
   },
   "scripts": {
     "pretest": "eslint .",
-    "test": "jest"
+    "test": "jest",
+    "relink": "yarn unlink && yarn link"
   },
   "repository": "hqtoan94/generator-modern-chrome-extension",
   "license": "MIT"
