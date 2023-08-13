@@ -72,7 +72,7 @@ describe('generator-modern-chrome-extension:app', () => {
         'app/images/icon-16.png',
         'app/images/icon-128.png',
         'src/entries/backgroundServiceWorker.js',
-        'src/entries/contentScript.js'
+        'src/entries/contentscript.js'
       ]);
 
       assert.fileContent([
@@ -152,7 +152,7 @@ describe('generator-modern-chrome-extension:app', () => {
         'app/images/icon-16.png',
         'app/images/icon-128.png',
         'src/entries/backgroundServiceWorker.ts',
-        'src/entries/contentScript.ts'
+        'src/entries/contentscript.ts'
       ]);
 
       assert.fileContent([
