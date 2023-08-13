@@ -11,11 +11,26 @@ npm install -g yo
 npm install -g generator-modern-chrome-extension
 ```
 
+## Usage
+
 Then generate your new project:
 
 ```bash
 yo modern-chrome-extension --nodePackageManager=yarn
 ```
+
+### Options
+
+- Typescript:
+
+  ```bash
+  yo modern-chrome-extension --nodePackageManager=yarn --typescript
+  ```
+
+## Supported feature
+
+- Manifest V3
+- ContentScript
 
 ## Getting To Know Yeoman
 
