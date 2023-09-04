@@ -101,7 +101,9 @@ module.exports = class extends Generator {
   }
 
   webpackCommon() {
-    this._copyConfig('webpack.common.js');
+    this._copyConfig('webpack.common.js', null, {
+      contentScript: isChecked(this.props.uiFeatures, 'contentScripts')
+    });
   }
 
   webpackDev() {
@@ -114,11 +116,15 @@ module.exports = class extends Generator {
 
   packageJSON() {
     const devDependencies = {
-      '@babel/core': '^7.22.9',
-      '@babel/preset-env': '^7.22.9',
-      'babel-loader': '^9.1.3',
-      webpack: '^5.88.2',
-      'webpack-cli': '^5.1.4'
+      '@babel/core': '7.22.9',
+      '@babel/preset-env': '7.22.9',
+      'babel-loader': '9.1.3',
+      webpack: '5.88.2',
+      'webpack-cli': '5.1.4',
+      'css-loader': '6.8.1',
+      'node-sass': '9.0.0',
+      'sass-loader': '13.3.2',
+      'mini-css-extract-plugin': '^2.7.6'
     };
 
     if (this.options.typescript) {
@@ -190,6 +196,7 @@ module.exports = class extends Generator {
     }
 
     this._copyScript('entries/contentscript.js');
+    this._copyScript('styles/contentscript.scss');
   }
 
   backgroundScript() {

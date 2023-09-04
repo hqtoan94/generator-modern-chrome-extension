@@ -41,18 +41,17 @@ describe('generator-modern-chrome-extension:app', () => {
 
       assert.fileContent([
         ['app/manifest.json', '"service_worker"'],
-        ['app/manifest.json', '"scripts/backgroundServiceWorker.js"'],
+        ['app/manifest.json', '"scripts/backgroundScripts.js"'],
         ['config/webpack.common.js', "'babel-loader'"],
-        ['config/webpack.common.js', 'backgroundServiceWorker'],
-        [
-          'config/webpack.common.js',
-          './src/entries/backgroundServiceWorker.js'
-        ],
+        ['config/webpack.common.js', 'backgroundScripts'],
+        ['config/webpack.common.js', './src/entries/backgroundServiceWorker.js']
+      ]);
+      assert.noFile(['app/scripts/contentscript.js']);
+      assert.noFileContent([
+        ['app/manifest.json', '"content_scripts"'],
         ['config/webpack.common.js', 'contentscript'],
         ['config/webpack.common.js', './src/entries/contentscript.js']
       ]);
-      assert.noFile(['app/scripts/contentscript.js']);
-      assert.noFileContent('app/manifest.json', '"content_scripts"');
     });
 
     it('initiate content script project', async () => {
@@ -72,13 +71,14 @@ describe('generator-modern-chrome-extension:app', () => {
         'app/images/icon-16.png',
         'app/images/icon-128.png',
         'src/entries/backgroundServiceWorker.js',
-        'src/entries/contentscript.js'
+        'src/entries/contentscript.js',
+        'src/styles/contentscript.scss'
       ]);
 
       assert.fileContent([
         ['app/manifest.json', '"service_worker"'],
         ['app/manifest.json', '"content_scripts"'],
-        ['app/manifest.json', '"scripts/backgroundServiceWorker.js"'],
+        ['app/manifest.json', '"scripts/backgroundScripts.js"'],
         ['config/webpack.common.js', "'babel-loader'"],
         ['config/webpack.common.js', 'backgroundServiceWorker'],
         [
@@ -86,7 +86,8 @@ describe('generator-modern-chrome-extension:app', () => {
           './src/entries/backgroundServiceWorker.js'
         ],
         ['config/webpack.common.js', 'contentscript'],
-        ['config/webpack.common.js', './src/entries/contentscript.js']
+        ['config/webpack.common.js', './src/entries/contentscript.js'],
+        ['config/webpack.common.js', "'styles/contentscript'"]
       ]);
     });
   });
@@ -117,18 +118,17 @@ describe('generator-modern-chrome-extension:app', () => {
 
       assert.fileContent([
         ['app/manifest.json', '"service_worker"'],
-        ['app/manifest.json', '"scripts/backgroundServiceWorker.js"'],
+        ['app/manifest.json', '"scripts/backgroundScripts.js"'],
         ['config/webpack.common.js', "'ts-loader'"],
         ['config/webpack.common.js', 'backgroundServiceWorker'],
-        [
-          'config/webpack.common.js',
-          './src/entries/backgroundServiceWorker.ts'
-        ],
+        ['config/webpack.common.js', './src/entries/backgroundServiceWorker.ts']
+      ]);
+      assert.noFile(['app/scripts/contentscript.ts']);
+      assert.noFileContent([
+        ['app/manifest.json', '"content_scripts"'],
         ['config/webpack.common.js', 'contentscript'],
         ['config/webpack.common.js', './src/entries/contentscript.ts']
       ]);
-      assert.noFile(['app/scripts/contentscript.ts']);
-      assert.noFileContent('app/manifest.json', '"content_scripts"');
     });
 
     it('initiate content script project', async () => {
@@ -152,13 +152,14 @@ describe('generator-modern-chrome-extension:app', () => {
         'app/images/icon-16.png',
         'app/images/icon-128.png',
         'src/entries/backgroundServiceWorker.ts',
-        'src/entries/contentscript.ts'
+        'src/entries/contentscript.ts',
+        'src/styles/contentscript.scss'
       ]);
 
       assert.fileContent([
         ['app/manifest.json', '"service_worker"'],
         ['app/manifest.json', '"content_scripts"'],
-        ['app/manifest.json', '"scripts/backgroundServiceWorker.js"'],
+        ['app/manifest.json', '"scripts/backgroundScripts.js"'],
         ['config/webpack.common.js', "'ts-loader'"],
         ['config/webpack.common.js', 'backgroundServiceWorker'],
         [
@@ -166,7 +167,8 @@ describe('generator-modern-chrome-extension:app', () => {
           './src/entries/backgroundServiceWorker.ts'
         ],
         ['config/webpack.common.js', 'contentscript'],
-        ['config/webpack.common.js', './src/entries/contentscript.ts']
+        ['config/webpack.common.js', './src/entries/contentscript.ts'],
+        ['config/webpack.common.js', "'styles/contentscript'"]
       ]);
     });
   });
