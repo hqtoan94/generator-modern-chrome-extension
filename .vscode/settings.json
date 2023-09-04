@@ -1,0 +1,4 @@
+{
+  "jest.shell": "/bin/zsh",
+  "jest.jestCommandLine": "source ~/.zshrc && nvm use 18 && yarn test"
+}

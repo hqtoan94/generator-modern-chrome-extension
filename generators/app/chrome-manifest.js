@@ -3,6 +3,7 @@
 
 const headerize = require('headerize');
 const Manifest = require('chrome-manifest');
+const { isChecked } = require('./utils');
 
 const chromePrimaryPermissions = [];
 
@@ -58,7 +59,7 @@ module.exports = {
       },
       default_locale: 'en',
       background: {
-        service_worker: 'scripts/backgroundServiceWorker.js'
+        service_worker: 'scripts/backgroundScripts.js'
       }
     });
 
@@ -68,6 +69,16 @@ module.exports = {
         permissions: opts.permissions
       })
     );
+
+    if (isChecked(opts.fields, 'contentScripts')) {
+      manifest.merge({
+        content_scripts: [
+          {
+            css: ['styles/contentscript.css']
+          }
+        ]
+      });
+    }
 
     return manifest;
   }
